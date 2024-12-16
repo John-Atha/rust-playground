@@ -32,5 +32,19 @@ fn main() {
         existing.push(name);
     }
 
-    println!("{:?}", employees);
+    for (department, mut names) in employees {
+        print_employees_of_department(&mut names, &department);
+    }
+}
+
+// sorts the names in place, then prints them
+fn print_employees_of_department(
+    names: &mut Vec<String>,
+    department: &Department
+) {
+    println!("{:?} department:", department);
+    names.sort();
+    for name in names {
+        println!("{}", name);
+    }
 }
