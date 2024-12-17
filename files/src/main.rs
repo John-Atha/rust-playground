@@ -1,4 +1,4 @@
-use std::{ fs::File, io::Read };
+use std::{ fs::File, io::{ ErrorKind, Read } };
 
 fn main() {
     let filenames = vec!["data/hello.txt", "data/haha.txt"];
@@ -12,10 +12,17 @@ fn read_file(filename: String) {
     let file_result = File::open(filename.clone());
     let mut file = match file_result {
         Ok(file) => file,
-        Err(error) => {
-            println!("\tError while reading the file {filename}: {error}");
-            return;
-        },
+        Err(error) =>
+            match error.kind() {
+                ErrorKind::NotFound => {
+                    println!("\tFile {filename} was not found.");
+                    return;
+                }
+                _ => {
+                    println!("\tGeneric rrror while reading the file {filename}: {error}");
+                    return;
+                }
+            }
     };
     let mut contents = String::new();
     let bytes_len_result = file.read_to_string(&mut contents);
